@@ -213,9 +213,9 @@
           <h2>Resumo do mês</h2>
           <div class="stat-grid">
             <div class="stat"><p class="label">Renda</p><p class="value num" id="stRenda">R$ 0</p></div>
-            <div class="stat"><p class="label">Limite total</p><p class="value num" id="stPlan">R$ 0</p></div>
+            <div class="stat"><p class="label">Distribuição da renda</p><p class="value num" id="stDist">0%</p></div>
             <div class="stat"><p class="label">Gasto</p><p class="value num" id="stReal">R$ 0</p></div>
-            <div class="stat"><p class="label">% da renda usada</p><p class="value num" id="stPct">0%</p></div>
+            <div class="stat"><p class="label">Renda restante</p><p class="value num" id="stRestante">R$ 0</p></div>
           </div>
           <div class="chart-box"><canvas id="donutChart"></canvas></div>
         </div>
@@ -718,15 +718,23 @@ function renderCategories(){
 function renderSummary(){
   const md = currentMonthData();
   const renda = totalIncome(md);
-  let totalLimite = 0, totalGasto = 0;
+  let totalGasto = 0, totalPct = 0;
   md.categories.forEach(cat => {
-    totalLimite += renda * (cat.pct||0) / 100;
+    totalPct += cat.pct || 0;
     totalGasto += totalEntries(cat.items);
   });
+  const restante = renda - totalGasto;
+  const stDist = document.getElementById('stDist');
+  const stRestante = document.getElementById('stRestante');
+
   document.getElementById('stRenda').textContent = fmt(renda);
-  document.getElementById('stPlan').textContent = fmt(totalLimite);
   document.getElementById('stReal').textContent = fmt(totalGasto);
-  document.getElementById('stPct').textContent = renda > 0 ? Math.round((totalGasto/renda)*100) + '%' : '0%';
+
+  stDist.textContent = Math.round(totalPct) + '%';
+  stDist.style.color = Math.round(totalPct) === 100 ? 'var(--teal)' : (totalPct > 100 ? 'var(--brick)' : 'var(--gold)');
+
+  stRestante.textContent = fmt(restante);
+  stRestante.style.color = restante < 0 ? 'var(--brick)' : 'var(--ink)';
 }
 
 function renderDistTable(){
