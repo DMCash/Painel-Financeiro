@@ -5,86 +5,143 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Painel financeiro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #eef1ee;
+    --bg: #EEF1FA;
     --surface: #ffffff;
-    --ink: #16231f;
-    --ink-soft: #4c5a54;
-    --ink-faint: #8b968f;
-    --line: #d9ddd7;
-    --line-strong: #b9c0b9;
-    --teal: #2f6f62;
-    --teal-soft: #dfece7;
-    --gold: #b98a3e;
-    --gold-soft: #f4ead4;
-    --brick: #b23a34;
-    --brick-soft: #f6e3e1;
-    --pine: #17332c;
-    --slate: #45507a;
-    --cream: #f4f1e6;
-    --radius: 6px;
+    --surface-soft: #F7F8FD;
+    --ink: #171A33;
+    --ink-soft: #5B6180;
+    --ink-faint: #9599B5;
+    --line: #E7E9F5;
+    --line-strong: #D6D9EE;
+    --primary: #3652F0;
+    --primary-dark: #263CC4;
+    --primary-soft: #E8ECFE;
+    --teal: #0E9D74;
+    --teal-soft: #DFF4EC;
+    --gold: #C4881F;
+    --gold-soft: #FBEDD8;
+    --brick: #E14640;
+    --brick-soft: #FCE6E4;
+    --slate: #5B5FA6;
+    --slate-soft: #E7E7F5;
+    --radius: 8px;
+    --radius-lg: 18px;
+    --shadow-card: 0 1px 2px rgba(23,26,51,0.04), 0 8px 24px -12px rgba(23,26,51,0.10);
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .num { font-family: 'Fraunces', serif; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 14.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .num { font-family: 'Fraunces', serif; font-feature-settings: "tnum"; }
+  a { color: inherit; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 99px; }
 
-  .hero { background: var(--pine); padding: 1.75rem 1.5rem; }
-  .hero-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; }
-  .brand { display: flex; align-items: flex-start; gap: 14px; }
-  .brand-mark { width: 36px; height: 36px; border-radius: 8px; background: rgba(244,241,230,0.1); border: 1px solid rgba(244,241,230,0.25); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; color: var(--cream); flex-shrink: 0; margin-top: 1px; }
-  .hero h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 25px; margin: 0; color: #fbf9f2; }
-  .hero p#subtitle { margin: 4px 0 0; font-size: 13.5px; color: rgba(244,241,230,0.72); }
-  #heroActions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  #heroActions span#userEmail { font-size: 12.5px; color: rgba(244,241,230,0.68); margin-right: 2px; }
-  #heroActions button { background: rgba(244,241,230,0.08); border-color: rgba(244,241,230,0.28); color: var(--cream); }
-  #heroActions button:hover { background: rgba(244,241,230,0.18); }
-
-  .months-bar { display: flex; align-items: flex-end; gap: 4px; overflow-x: auto; padding-top: 12px; margin-bottom: 1.75rem; border-bottom: 2px solid var(--pine); }
-  .month-tab { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-soft); background: var(--line); border: 2px solid transparent; border-radius: 8px 8px 0 0; padding: 8px 16px; cursor: pointer; white-space: nowrap; }
-  .month-tab.active { color: var(--ink); background: var(--bg); font-weight: 500; border: 2px solid var(--pine); border-bottom-color: var(--bg); margin-bottom: -2px; }
-  .month-tab:hover:not(.active) { background: var(--line-strong); }
-  .month-add { display: flex; align-items: center; gap: 6px; margin-left: 4px; }
-  .month-add input[type=month] { height: 30px; font-size: 13px; padding: 0 6px; }
-  .month-add button { height: 30px; padding: 0 10px; font-size: 13px; }
-
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-
-  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.3rem; }
-  .panel h2 { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; margin: 0 0 0.85rem; display: flex; justify-content: space-between; align-items: baseline; }
-  .panel h2 .subtotal { font-size: 14px; color: var(--teal); }
-  .panel + .panel { margin-top: 1.5rem; }
-
-  input, select { height: 32px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; padding: 0 8px; }
-  input:focus, select:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal-soft); }
-  button { height: 32px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; }
-  button:hover { background: var(--bg); }
+  input, select { height: 34px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13px; padding: 0 9px; }
+  input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+  button { height: 34px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; font-weight: 500; }
+  button:hover { background: var(--surface-soft); }
   button.ghost { border: none; background: transparent; padding: 4px 6px; height: auto; color: var(--ink-faint); }
   button.ghost:hover { background: var(--brick-soft); color: var(--brick); }
-  button.small { height: 28px; font-size: 12px; padding: 0 10px; border-style: dashed; color: var(--ink-soft); background: transparent; }
-  button.small:hover { background: var(--bg); border-style: solid; color: var(--ink); }
-  button.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
-  button.primary:hover { background: #285a50; }
+  button.small { height: 30px; font-size: 12.5px; padding: 0 10px; border-style: dashed; color: var(--ink-soft); background: transparent; }
+  button.small:hover { background: var(--surface-soft); border-style: solid; color: var(--ink); }
+  button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+  button.primary:hover { background: var(--primary-dark); }
   button:disabled { opacity: 0.6; cursor: default; }
+  .icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .icon-lg { width: 20px; height: 20px; flex-shrink: 0; }
+  svg.icon, svg.icon-lg { stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-  .line-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line); }
+  /* ---------- shell ---------- */
+  #appRoot { display: flex; min-height: 100vh; }
+
+  /* ---------- sidebar ---------- */
+  .sidebar { width: 244px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--line); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 20px 16px; }
+  .brand-mark { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(155deg, var(--primary), #6A4DF4); display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px; flex-shrink: 0; }
+  .sidebar-brand h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin: 0; color: var(--ink); }
+  .sidebar-brand p { margin: 1px 0 0; font-size: 11.5px; color: var(--ink-faint); }
+
+  .side-nav { padding: 4px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .side-nav-item { display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; padding: 0 10px; border: 1px solid transparent; background: transparent; border-radius: 10px; color: var(--ink-soft); font-size: 13.5px; font-weight: 500; text-align: left; justify-content: flex-start; }
+  .side-nav-item:hover { background: var(--surface-soft); color: var(--ink); }
+  .side-nav-item.active { background: var(--primary-soft); color: var(--primary-dark); }
+  .side-nav-item .icon { color: inherit; }
+
+  .sidebar-months { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 18px 12px 8px; border-top: 1px solid var(--line); margin-top: 10px; }
+  .sidebar-label { font-size: 11px; font-weight: 600; color: var(--ink-faint); letter-spacing: 0.02em; margin: 0 8px 8px; }
+  .months-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; padding: 0 2px; }
+  .month-tab { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 36px; padding: 0 10px; border: 1px solid transparent; background: transparent; border-radius: 9px; color: var(--ink-soft); font-size: 13px; font-weight: 500; text-align: left; text-transform: capitalize; }
+  .month-tab:hover:not(.active) { background: var(--surface-soft); }
+  .month-tab.active { background: var(--primary); color: #fff; }
+  .month-tab .dot { width: 6px; height: 6px; border-radius: 99px; background: var(--teal); flex-shrink: 0; }
+  .month-tab.active .dot { background: #fff; }
+
+  .month-add { display: flex; align-items: center; gap: 6px; padding: 10px 2px 4px; }
+  .month-add input[type=month] { height: 32px; font-size: 12px; padding: 0 6px; flex: 1; min-width: 0; }
+  .month-add button { height: 32px; width: 32px; padding: 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .month-add-hint { font-size: 11px; color: var(--brick); padding: 0 2px; }
+
+  .sidebar-footer { border-top: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .sidebar-user { display: flex; align-items: center; gap: 9px; padding: 6px 8px; }
+  .sidebar-user .avatar { width: 30px; height: 30px; border-radius: 99px; background: var(--slate-soft); color: var(--slate); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-user span#userEmail { font-size: 12px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sidebar-actions { display: flex; gap: 6px; }
+  .sidebar-actions button { flex: 1; height: 32px; padding: 0 4px; font-size: 11.5px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+  /* ---------- main column ---------- */
+  .main-col { flex: 1; min-width: 0; }
+  .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 28px 32px 8px; flex-wrap: wrap; }
+  .topbar h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 23px; margin: 0; }
+  .topbar p#subtitle { margin: 3px 0 0; font-size: 13px; color: var(--ink-soft); }
+
+  .wrap { padding: 12px 32px 48px; max-width: 1320px; }
+
+  /* ---------- quick stat row ---------- */
+  .quickstats { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px 24px; box-shadow: var(--shadow-card); margin-bottom: 1.5rem; }
+  .quickstats-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .quickstats-head h3 { font-family: 'Fraunces', serif; font-size: 15.5px; font-weight: 600; margin: 0; }
+  .quickstats-head span.delta { font-size: 12px; font-weight: 600; color: var(--teal); background: var(--teal-soft); padding: 3px 10px; border-radius: 99px; }
+  .qs-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .qs-item { display: flex; flex-direction: column; gap: 8px; }
+  .qs-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+  .qs-icon.in { background: var(--teal-soft); color: var(--teal); }
+  .qs-icon.out { background: var(--brick-soft); color: var(--brick); }
+  .qs-icon.inv { background: var(--primary-soft); color: var(--primary); }
+  .qs-item p.label { margin: 0; font-size: 12px; color: var(--ink-soft); }
+  .qs-item p.value { margin: 2px 0 0; font-size: 20px; font-weight: 500; }
+  .qs-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .qs-foot p.label { margin: 0 0 3px; font-size: 12px; color: var(--ink-soft); }
+  .qs-foot p.value { margin: 0; font-size: 24px; font-weight: 500; }
+  .qs-foot a.link { font-size: 12.5px; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 3px; }
+
+  /* ---------- panels ---------- */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } .qs-row { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 760px) { #appRoot { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; } .sidebar-months { border-top: none; } .months-list { max-height: 160px; } }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.15rem 1.35rem; box-shadow: var(--shadow-card); }
+  .panel h2 { font-family: 'Fraunces', serif; font-size: 15.5px; font-weight: 600; margin: 0 0 0.85rem; display: flex; justify-content: space-between; align-items: baseline; }
+  .panel h2 .subtotal { font-size: 14px; color: var(--primary); }
+  .panel + .panel { margin-top: 1.5rem; }
+  .panel-note { font-size: 12.5px; color: var(--ink-soft); margin: -6px 0 12px; }
+
+  .line-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid var(--line); }
   .line-item:first-of-type { border-top: none; }
   .line-item input[type=text] { flex: 1; border: none; background: transparent; padding: 0; height: auto; font-size: 13.5px; }
   .line-item input[type=number] { width: 110px; text-align: right; }
-  .line-total { display: flex; justify-content: space-between; padding-top: 8px; margin-top: 6px; border-top: 1px solid var(--line-strong); font-weight: 500; font-size: 14px; }
+  .line-total { display: flex; justify-content: space-between; padding-top: 9px; margin-top: 6px; border-top: 1px solid var(--line-strong); font-weight: 600; font-size: 14px; }
 
-  .cat-block { border-top: 1px solid var(--line); padding: 14px 0 14px 14px; box-shadow: inset 4px 0 0 var(--line-strong); border-radius: 5px; }
+  .cat-block { border-top: 1px solid var(--line); padding: 15px 0 15px 14px; box-shadow: inset 3px 0 0 var(--line-strong); border-radius: 5px; }
   .cat-block:first-child { border-top: none; }
-  .cat-block.tipo-gasto { box-shadow: inset 4px 0 0 var(--gold); }
-  .cat-block.tipo-investimento { box-shadow: inset 4px 0 0 var(--teal); }
-  .cat-block.tipo-reserva { box-shadow: inset 4px 0 0 var(--slate); }
+  .cat-block.tipo-gasto { box-shadow: inset 3px 0 0 var(--gold); }
+  .cat-block.tipo-investimento { box-shadow: inset 3px 0 0 var(--primary); }
+  .cat-block.tipo-reserva { box-shadow: inset 3px 0 0 var(--slate); }
   .cat-block-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
   .cat-block-head input[type=text].cat-name { flex: 1; border: none; background: transparent; font-size: 15px; font-weight: 600; padding: 0; height: auto; }
-  .cat-block-head select { width: 118px; font-size: 12px; }
+  .cat-block-head select { width: 122px; font-size: 12px; }
   .cat-sub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
   .field { display: flex; align-items: center; gap: 6px; }
   .field label { font-size: 12px; color: var(--ink-soft); }
@@ -93,78 +150,77 @@
   .bar { height: 7px; background: var(--bg); border-radius: 99px; overflow: hidden; margin: 6px 0 3px; }
   .bar > div { height: 100%; border-radius: 99px; transition: width 0.2s ease; }
   .status { font-size: 12px; font-weight: 500; }
-  .tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
-  .tag.gasto { background: var(--gold-soft); color: #8a611f; }
-  .tag.investimento { background: var(--teal-soft); color: var(--teal); }
-  .tag.reserva { background: #e6e9f2; color: #45507a; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+  .tag.gasto { background: var(--gold-soft); color: #7A5416; }
+  .tag.investimento { background: var(--primary-soft); color: var(--primary-dark); }
+  .tag.reserva { background: var(--slate-soft); color: var(--slate); }
 
   .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.1rem; }
-  .stat { background: var(--bg); border-radius: var(--radius); padding: 12px 14px; border-left: 3px solid var(--line-strong); }
+  .stat { background: var(--surface-soft); border-radius: var(--radius); padding: 12px 14px; border-left: 3px solid var(--line-strong); }
   .stat p.label { margin: 0 0 4px; font-size: 12px; color: var(--ink-soft); }
-  .stat p.value { margin: 0; font-size: 22px; font-weight: 500; }
+  .stat p.value { margin: 0; font-size: 21px; font-weight: 500; }
 
   table.dist { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  table.dist th { text-align: left; font-size: 11.5px; color: var(--ink-soft); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); }
+  table.dist th { text-align: left; font-size: 11.5px; color: var(--ink-soft); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); }
   table.dist td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
   table.dist td.num, table.dist th.num { text-align: right; font-family: 'Fraunces', serif; }
-  table.dist tr.total td { border-top: 1px solid var(--line-strong); border-bottom: none; font-weight: 500; padding-top: 9px; }
+  table.dist tr.total td { border-top: 1px solid var(--line-strong); border-bottom: none; font-weight: 600; padding-top: 9px; }
   .sobra-pos { color: var(--teal); }
   .sobra-neg { color: var(--brick); }
 
-  .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
-  .profile-card { border: 1px solid var(--line); border-top-width: 3px; border-radius: 10px; padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
-  .profile-card.key-investidor { border-top-color: var(--teal); }
-  .profile-card.key-organizado { border-top-color: var(--gold); }
-  .profile-card.key-livre { border-top-color: var(--slate); }
-  .profile-card.active { box-shadow: 0 0 0 2px var(--teal) inset; background: var(--teal-soft); }
-  .profile-card h3 { font-family: 'Fraunces', serif; font-size: 14.5px; margin: 0; }
-  .profile-card p { font-size: 12.5px; color: var(--ink-soft); margin: 0; flex: 1; }
-  .profile-card .badge { font-size: 11px; color: var(--teal); font-weight: 500; }
+  .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .profile-card { border: 1px solid var(--line); border-radius: 14px; padding: 15px 15px 13px; display: flex; flex-direction: column; gap: 9px; position: relative; }
+  .profile-card .p-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+  .profile-card.key-investidor .p-icon { background: var(--primary-soft); color: var(--primary); }
+  .profile-card.key-organizado .p-icon { background: var(--gold-soft); color: #7A5416; }
+  .profile-card.key-livre .p-icon { background: var(--slate-soft); color: var(--slate); }
+  .profile-card.active { box-shadow: 0 0 0 2px var(--primary) inset; background: var(--primary-soft); }
+  .profile-card h3 { font-family: 'Fraunces', serif; font-size: 14.5px; font-weight: 600; margin: 0; }
+  .profile-card p.desc { font-size: 12.5px; color: var(--ink-soft); margin: 0; flex: 1; }
+  .profile-card .badge { font-size: 11px; color: var(--primary-dark); font-weight: 600; }
+  .profile-card .active-badge { position: absolute; top: 14px; right: 14px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--teal); background: var(--teal-soft); padding: 3px 9px; border-radius: 99px; }
 
   .empty { color: var(--ink-faint); font-size: 13px; padding: 0.75rem 0; text-align: center; }
   canvas { max-width: 100%; }
   .chart-box { position: relative; height: 200px; }
   .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 
-  .auth-wrap { max-width: 380px; margin: 4rem auto; }
-  .auth-wrap h1 { font-family: 'Fraunces', serif; font-size: 24px; margin: 0 0 4px; }
+  /* ---------- overview-only ---------- */
+  .ov-stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 1.5rem; }
+  @media (max-width: 900px) { .ov-stat-row { grid-template-columns: 1fr 1fr; } }
+  .ov-stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px 18px; box-shadow: var(--shadow-card); }
+  .ov-stat p.label { margin: 0 0 6px; font-size: 12px; color: var(--ink-soft); }
+  .ov-stat p.value { margin: 0; font-size: 22px; font-weight: 500; }
+
+  /* ---------- auth ---------- */
+  .auth-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; background: var(--bg); }
+  .auth-wrap { max-width: 380px; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 2rem 1.9rem; }
+  .auth-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 1.4rem; }
+  .auth-wrap h1 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin: 0 0 4px; }
   .auth-wrap p.sub { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 1.5rem; }
   .auth-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
   .auth-field label { font-size: 12.5px; color: var(--ink-soft); }
-  .auth-field input { height: 38px; width: 100%; }
+  .auth-field input { height: 40px; width: 100%; }
   .auth-actions { display: flex; gap: 8px; margin-top: 6px; }
-  .auth-actions button { flex: 1; height: 38px; }
+  .auth-actions button { flex: 1; height: 40px; }
   .auth-error { color: var(--brick); font-size: 12.5px; margin-top: 10px; min-height: 16px; }
   .auth-toggle { text-align: center; margin-top: 14px; font-size: 13px; color: var(--ink-soft); }
-  .auth-toggle a { color: var(--teal); cursor: pointer; text-decoration: underline; }
+  .auth-toggle a { color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 500; }
 </style>
 </head>
 <body>
-<div class="hero">
-  <div class="hero-inner">
-    <div class="brand">
-      <span class="brand-mark">PF</span>
-      <div>
-        <h1>Painel financeiro</h1>
-        <p id="subtitle">Sua renda, dividida com intenção.</p>
+
+<div class="wrap sr-only"><h2>Painel de controle financeiro pessoal com login por e-mail e senha, sincronização na nuvem, categorias independentes por mês com limite ou meta por percentual, tabela de distribuição e visão geral acumulada por mês e por categoria</h2></div>
+
+<div id="authGate">
+  <div class="auth-shell">
+    <div class="auth-wrap">
+      <div class="auth-brand">
+        <span class="brand-mark">PF</span>
+        <div>
+          <strong style="font-family:'Fraunces',serif; font-size:15px;">Painel financeiro</strong>
+        </div>
       </div>
-    </div>
-    <div id="heroActions" style="display:none;">
-      <span id="userEmail"></span>
-      <button id="exportBtn">Exportar backup</button>
-      <button id="importBtn">Importar backup</button>
-      <input type="file" id="importInput" accept="application/json" style="display:none;" />
-      <button id="resetBtn">Limpar tudo</button>
-      <button id="logoutBtn">Sair</button>
-    </div>
-  </div>
-</div>
-
-<div class="wrap">
-  <h2 class="sr-only">Painel de controle financeiro pessoal com login por e-mail e senha, sincronização na nuvem, categorias independentes por mês com limite ou meta por percentual e tabela de distribuição</h2>
-
-  <div id="authGate">
-    <div class="panel auth-wrap">
       <h1 id="authTitle">Entrar</h1>
       <p class="sub" id="authSub">Acesse seu painel financeiro de qualquer aparelho.</p>
       <div class="auth-field">
@@ -182,53 +238,77 @@
       <p class="auth-toggle" id="authToggle">Não tem conta? <a id="authToggleLink">Criar conta</a></p>
     </div>
   </div>
+</div>
 
-  <div id="appRoot" style="display:none;">
-    <div class="months-bar" id="monthsBar"></div>
-
-    <div class="panel" style="margin-bottom:1.5rem;">
-      <h2>Perfil de categorias deste mês</h2>
-      <p style="font-size:12.5px; color:var(--ink-soft); margin:-6px 0 12px;">Aplica um conjunto de categorias e limites prontos só para o mês selecionado. Outros meses não são afetados. Depois de aplicar, tudo continua editável.</p>
-      <div class="profile-grid" id="profileGrid"></div>
+<div id="appRoot" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-mark">PF</span>
+      <div>
+        <h1>Painel financeiro</h1>
+        <p>Sua renda, com intenção</p>
+      </div>
     </div>
 
-    <div class="grid">
-      <div>
-        <div class="panel">
-          <h2>Entradas <span class="subtotal num" id="incomeSubtotal">R$ 0</span></h2>
-          <div id="incomeList"></div>
-          <div class="line-total"><span>Total</span><span class="num" id="incomeTotal">R$ 0</span></div>
-          <button class="small" id="addIncome" style="margin-top:10px;">+ Nova entrada</button>
-        </div>
+    <nav class="side-nav">
+      <button class="side-nav-item" id="navOverview">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.6"/><rect x="13" y="3" width="8" height="5" rx="1.6"/><rect x="13" y="10" width="8" height="11" rx="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.6"/></svg>
+        Visão geral
+      </button>
+      <button class="side-nav-item" id="navMonth">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>
+        <span id="navMonthLabel">Mês</span>
+      </button>
+    </nav>
 
-        <div class="panel">
-          <h2>Distribuição por categoria</h2>
-          <div id="catList"></div>
-          <button class="small" id="addCat" style="margin-top:6px;">+ Nova categoria</button>
-        </div>
+    <div class="sidebar-months">
+      <p class="sidebar-label">Meses</p>
+      <div class="months-list" id="monthsBar"></div>
+      <div class="month-add" id="monthAddWrap"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <span class="avatar" id="userAvatar">·</span>
+        <span id="userEmail"></span>
       </div>
+      <div class="sidebar-actions" id="heroActions" style="display:none;">
+        <button id="exportBtn" title="Exportar backup">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+        </button>
+        <button id="importBtn" title="Importar backup">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 21h16"/></svg>
+        </button>
+        <input type="file" id="importInput" accept="application/json" style="display:none;" />
+        <button id="resetBtn" title="Limpar tudo">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.6c0-.6.5-1.1 1.1-1.1h3.8c.6 0 1.1.5 1.1 1.1V7M6 7l1 13a2 2 0 0 0 2 1.9h6a2 2 0 0 0 2-1.9l1-13"/></svg>
+        </button>
+        <button id="logoutBtn" title="Sair">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
 
+  <div class="main-col">
+    <header class="topbar">
       <div>
-        <div class="panel">
-          <h2>Resumo do mês</h2>
-          <div class="stat-grid">
-            <div class="stat"><p class="label">Renda</p><p class="value num" id="stRenda">R$ 0</p></div>
-            <div class="stat"><p class="label">Distribuição da renda</p><p class="value num" id="stDist">0%</p></div>
-            <div class="stat"><p class="label">Gasto</p><p class="value num" id="stReal">R$ 0</p></div>
-            <div class="stat"><p class="label">Renda restante</p><p class="value num" id="stRestante">R$ 0</p></div>
-          </div>
-          <div class="chart-box"><canvas id="donutChart"></canvas></div>
+        <h2 id="greeting">Olá</h2>
+        <p id="subtitle">Sua renda, dividida com intenção.</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+
+      <div id="viewOverview">
+        <div class="ov-stat-row">
+          <div class="ov-stat"><p class="label">Receita total</p><p class="value num" id="ovReceitas">R$ 0</p></div>
+          <div class="ov-stat"><p class="label">Despesas totais</p><p class="value num" id="ovDespesas">R$ 0</p></div>
+          <div class="ov-stat"><p class="label">Investido no total</p><p class="value num" id="ovInvest">R$ 0</p></div>
+          <div class="ov-stat"><p class="label">Saldo acumulado</p><p class="value num" id="ovSaldo">R$ 0</p></div>
         </div>
 
-        <div class="panel">
-          <h2>Tabela de distribuição</h2>
-          <table class="dist">
-            <thead><tr><th>Classificação</th><th class="num">Limite</th><th class="num">Gasto</th><th class="num">Sobra</th></tr></thead>
-            <tbody id="distBody"></tbody>
-          </table>
-        </div>
-
-        <div class="panel">
+        <div class="panel" style="margin-bottom:1.5rem;">
           <h2>Acumulado por mês</h2>
           <div class="chart-box"><canvas id="lineChart"></canvas></div>
         </div>
@@ -238,6 +318,82 @@
           <div class="chart-box"><canvas id="barChart"></canvas></div>
         </div>
       </div>
+
+      <div id="viewMonth" style="display:none;">
+        <div class="quickstats">
+          <div class="quickstats-head">
+            <h3 id="qsTitle">Resumo do mês</h3>
+          </div>
+          <div class="qs-row">
+            <div class="qs-item">
+              <span class="qs-icon in"><svg class="icon-lg" viewBox="0 0 24 24"><path d="M4 17V7a2 2 0 0 1 2-2h9l5 5v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M15 5v4h4"/></svg></span>
+              <p class="label">Receitas</p>
+              <p class="value num" id="qsReceitas">R$ 0</p>
+            </div>
+            <div class="qs-item">
+              <span class="qs-icon out"><svg class="icon-lg" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2.2"/><path d="M2.5 10h19"/></svg></span>
+              <p class="label">Despesas</p>
+              <p class="value num" id="qsDespesas">R$ 0</p>
+            </div>
+            <div class="qs-item">
+              <span class="qs-icon inv"><svg class="icon-lg" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 6h6v6"/></svg></span>
+              <p class="label">Investimentos</p>
+              <p class="value num" id="qsInvest">R$ 0</p>
+            </div>
+          </div>
+          <div class="qs-foot">
+            <div>
+              <p class="label">Saldo disponível</p>
+              <p class="value num" id="qsSaldo">R$ 0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:1.5rem;">
+          <h2>Perfil de categorias deste mês</h2>
+          <p class="panel-note">Aplica um conjunto de categorias e limites prontos só para o mês selecionado. Outros meses não são afetados. Depois de aplicar, tudo continua editável.</p>
+          <div class="profile-grid" id="profileGrid"></div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <div class="panel">
+              <h2>Entradas <span class="subtotal num" id="incomeSubtotal">R$ 0</span></h2>
+              <div id="incomeList"></div>
+              <div class="line-total"><span>Total</span><span class="num" id="incomeTotal">R$ 0</span></div>
+              <button class="small" id="addIncome" style="margin-top:10px;">+ Nova entrada</button>
+            </div>
+
+            <div class="panel">
+              <h2>Distribuição por categoria</h2>
+              <div id="catList"></div>
+              <button class="small" id="addCat" style="margin-top:6px;">+ Nova categoria</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h2>Resumo do mês</h2>
+              <div class="stat-grid">
+                <div class="stat"><p class="label">Renda</p><p class="value num" id="stRenda">R$ 0</p></div>
+                <div class="stat"><p class="label">Distribuição da renda</p><p class="value num" id="stDist">0%</p></div>
+                <div class="stat"><p class="label">Gasto</p><p class="value num" id="stReal">R$ 0</p></div>
+                <div class="stat"><p class="label">Renda restante</p><p class="value num" id="stRestante">R$ 0</p></div>
+              </div>
+              <div class="chart-box"><canvas id="donutChart"></canvas></div>
+            </div>
+
+            <div class="panel">
+              <h2>Tabela de distribuição</h2>
+              <table class="dist">
+                <thead><tr><th>Classificação</th><th class="num">Limite</th><th class="num">Gasto</th><th class="num">Sobra</th></tr></thead>
+                <tbody id="distBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -266,6 +422,7 @@ const db = getFirestore(fbApp);
 
 let currentUser = null;
 let authMode = 'login'; // 'login' | 'signup'
+let activeView = 'overview'; // 'overview' | 'month'
 
 const STORAGE_KEY = 'finance-app-data-v3';
 let data = null;
@@ -277,6 +434,11 @@ const monthLabel = (ym) => {
   const [y,m] = ym.split('-');
   const nomes = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   return nomes[parseInt(m,10)-1] + '/' + y.slice(2);
+};
+const monthLabelLong = (ym) => {
+  const [y,m] = ym.split('-');
+  const nomes = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  return nomes[parseInt(m,10)-1] + ' de ' + y;
 };
 const fmt = (n) => {
   const v = Math.round((n||0)*100)/100;
@@ -308,6 +470,7 @@ const PROFILES = {
     label: 'Investidor',
     badge: '20–30% p/ investir (moderado)',
     desc: 'Voltado a canalizar parte da renda para investir todo mês.',
+    icon: '<svg class="icon-lg" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 6h6v6"/></svg>',
     categories: [
       { nome: 'Essencial', pct: 35, tipo: 'gasto' },
       { nome: 'Lazer', pct: 10, tipo: 'gasto' },
@@ -321,6 +484,7 @@ const PROFILES = {
     label: 'Organizado',
     badge: '20–30% p/ dívidas (moderado)',
     desc: 'Voltado a ajustar as despesas atuais e encerrar dívidas.',
+    icon: '<svg class="icon-lg" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"/><path d="M18.5 15.5l2 2 3.2-3.4" transform="translate(-4 0)"/></svg>',
     categories: [
       { nome: 'Essencial', pct: 35, tipo: 'gasto' },
       { nome: 'Quitação de dívidas', pct: 25, tipo: 'gasto' },
@@ -334,6 +498,7 @@ const PROFILES = {
     label: 'Livre',
     badge: null,
     desc: 'Modelo em branco para você ajustar todas as % do seu jeito.',
+    icon: '<svg class="icon-lg" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg>',
     categories: [
       { nome: 'Categoria 1', pct: 0, tipo: 'gasto' }
     ]
@@ -456,6 +621,12 @@ function totalIncome(md){
 function totalEntries(list){
   return (list || []).reduce((s,i) => s + (i.valor || 0), 0);
 }
+function despesasOf(md){
+  return md.categories.filter(c => c.tipo === 'gasto').reduce((s,c) => s + totalEntries(c.items), 0);
+}
+function investimentosOf(md){
+  return md.categories.filter(c => c.tipo !== 'gasto').reduce((s,c) => s + totalEntries(c.items), 0);
+}
 
 function limitStatus(limite, gasto, tipo){
   const isMeta = tipo === 'investimento' || tipo === 'reserva';
@@ -463,11 +634,11 @@ function limitStatus(limite, gasto, tipo){
   const pct = gasto / limite;
   if (isMeta) {
     if (pct >= 1) return { color: 'var(--teal)', textColor: 'var(--teal)', text: Math.round(pct*100) + '% da meta' + (pct > 1 ? ' — superada, ótimo' : ' — atingida'), pct };
-    if (pct >= 0.9) return { color: 'var(--gold)', textColor: '#8a611f', text: Math.round(pct*100) + '% da meta — quase lá', pct };
+    if (pct >= 0.9) return { color: 'var(--gold)', textColor: '#7A5416', text: Math.round(pct*100) + '% da meta — quase lá', pct };
     return { color: 'var(--brick)', textColor: 'var(--brick)', text: Math.round(pct*100) + '% da meta — abaixo do planejado', pct };
   }
   if (gasto > limite) return { color: 'var(--brick)', textColor: 'var(--brick)', text: Math.round(pct*100) + '% do limite — ultrapassado', pct };
-  if (pct >= 0.9) return { color: 'var(--gold)', textColor: '#8a611f', text: Math.round(pct*100) + '% do limite — quase lá', pct };
+  if (pct >= 0.9) return { color: 'var(--gold)', textColor: '#7A5416', text: Math.round(pct*100) + '% do limite — quase lá', pct };
   return { color: 'var(--teal)', textColor: 'var(--teal)', text: Math.round(pct*100) + '% do limite usado', pct };
 }
 
@@ -500,14 +671,16 @@ function renderProfileGrid(){
   grid.innerHTML = '';
   Object.keys(PROFILES).forEach(key => {
     const p = PROFILES[key];
+    const isActive = md.activeProfile === key;
     const card = document.createElement('div');
-    card.className = 'profile-card key-' + key + (md.activeProfile === key ? ' active' : '');
+    card.className = 'profile-card key-' + key + (isActive ? ' active' : '');
     card.innerHTML = `
+      ${isActive ? '<span class="active-badge">ATIVA</span>' : ''}
+      <span class="p-icon">${p.icon}</span>
       <h3>${p.label}</h3>
-      <p>${p.desc}</p>
+      <p class="desc">${p.desc}</p>
       ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
-      <span class="badge" style="color:var(--ink-faint);">Alterável</span>
-      <button class="small" data-applyprofile="${key}">${md.activeProfile === key ? 'Perfil ativo neste mês' : 'Aplicar neste mês'}</button>
+      <button class="small" data-applyprofile="${key}">${isActive ? 'Perfil ativo neste mês' : 'Aplicar neste mês'}</button>
     `;
     grid.appendChild(card);
   });
@@ -553,32 +726,34 @@ function renderMonthsBar(){
   months.forEach(ym => {
     const btn = document.createElement('button');
     btn.className = 'month-tab' + (ym === currentMonth ? ' active' : '');
-    btn.textContent = monthLabel(ym);
-    btn.addEventListener('click', () => { currentMonth = ym; renderAll(); });
+    btn.innerHTML = '<span class="dot"></span><span style="flex:1; text-align:left;">' + monthLabel(ym) + '</span>';
+    btn.addEventListener('click', () => { currentMonth = ym; activeView = 'month'; renderAll(); });
     bar.appendChild(btn);
   });
-  const addWrap = document.createElement('div');
-  addWrap.className = 'month-add';
+
+  const addWrap = document.getElementById('monthAddWrap');
+  addWrap.innerHTML = '';
   const input = document.createElement('input');
   input.type = 'month';
   const lastMonth = months.length ? months[months.length - 1] : currentMonth;
   input.value = shiftMonth(lastMonth, 1);
   const addBtn = document.createElement('button');
-  addBtn.textContent = '+ Mês';
-  const hint = document.createElement('span');
-  hint.style.cssText = 'font-size:12px; color:var(--brick); margin-left:6px; white-space:nowrap;';
+  addBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+  addBtn.title = 'Adicionar mês';
+  addWrap.appendChild(input);
+  addWrap.appendChild(addBtn);
+  const hint = document.createElement('div');
+  hint.className = 'month-add-hint';
+  addWrap.parentElement.appendChild(hint);
   addBtn.addEventListener('click', () => {
     hint.textContent = '';
     if (!input.value) { hint.textContent = 'Escolha um mês antes de adicionar.'; return; }
     ensureMonth(input.value);
     currentMonth = input.value;
+    activeView = 'month';
     saveData();
     renderAll();
   });
-  addWrap.appendChild(input);
-  addWrap.appendChild(addBtn);
-  addWrap.appendChild(hint);
-  bar.appendChild(addWrap);
 }
 
 function renderIncome(){
@@ -735,6 +910,36 @@ function renderSummary(){
 
   stRestante.textContent = fmt(restante);
   stRestante.style.color = restante < 0 ? 'var(--brick)' : 'var(--ink)';
+
+  // quick stats card
+  const despesas = despesasOf(md);
+  const invest = investimentosOf(md);
+  const saldo = renda - despesas - invest;
+  document.getElementById('qsTitle').textContent = 'Resumo de ' + monthLabel(currentMonth);
+  document.getElementById('qsReceitas').textContent = fmt(renda);
+  document.getElementById('qsDespesas').textContent = fmt(despesas);
+  document.getElementById('qsInvest').textContent = fmt(invest);
+  const qsSaldo = document.getElementById('qsSaldo');
+  qsSaldo.textContent = fmt(saldo);
+  qsSaldo.style.color = saldo < 0 ? 'var(--brick)' : 'var(--ink)';
+}
+
+function renderOverviewStats(){
+  const months = Object.keys(data.months);
+  let receitas = 0, despesas = 0, invest = 0;
+  months.forEach(ym => {
+    const m = data.months[ym];
+    receitas += totalIncome(m);
+    despesas += despesasOf(m);
+    invest += investimentosOf(m);
+  });
+  document.getElementById('ovReceitas').textContent = fmt(receitas);
+  document.getElementById('ovDespesas').textContent = fmt(despesas);
+  document.getElementById('ovInvest').textContent = fmt(invest);
+  const ovSaldo = document.getElementById('ovSaldo');
+  const saldo = receitas - despesas - invest;
+  ovSaldo.textContent = fmt(saldo);
+  ovSaldo.style.color = saldo < 0 ? 'var(--brick)' : 'var(--ink)';
 }
 
 function renderDistTable(){
@@ -761,7 +966,7 @@ function renderDistTable(){
   tbody.appendChild(trTotal);
 }
 
-const palette = ['#2f6f62', '#b98a3e', '#45507a', '#b23a34', '#6b8e6a', '#8a611f', '#4c5a54', '#7c9a94'];
+const palette = ['#3652F0', '#0E9D74', '#C4881F', '#E14640', '#5B5FA6', '#7A5416', '#6A4DF4', '#1F8FC4'];
 
 function renderDonut(){
   const md = currentMonthData();
@@ -772,7 +977,7 @@ function renderDonut(){
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(ctx, {
     type: 'doughnut',
-    data: { labels: hasData ? labels : ['Sem dados ainda'], datasets: [{ data: hasData ? values : [1], backgroundColor: hasData ? palette : ['#e2e5e0'] }] },
+    data: { labels: hasData ? labels : ['Sem dados ainda'], datasets: [{ data: hasData ? values : [1], backgroundColor: hasData ? palette : ['#E7E9F5'] }] },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, tooltip: { enabled: hasData } } }
   });
 }
@@ -786,8 +991,8 @@ function renderLine(){
   lineChart = new Chart(ctx, {
     type: 'line',
     data: { labels: months.map(monthLabel), datasets: [
-      { label: 'Renda', data: rendas, borderColor: '#45507a', backgroundColor: 'transparent', tension: 0.25 },
-      { label: 'Gasto', data: gastos, borderColor: '#2f6f62', backgroundColor: 'transparent', tension: 0.25 }
+      { label: 'Renda', data: rendas, borderColor: '#5B5FA6', backgroundColor: 'transparent', tension: 0.25 },
+      { label: 'Gasto', data: gastos, borderColor: '#3652F0', backgroundColor: 'transparent', tension: 0.25 }
     ]},
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }, scales: { y: { beginAtZero: true, ticks: { font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } } }
   });
@@ -811,18 +1016,33 @@ function renderBar(){
   });
 }
 
+function applyView(){
+  document.getElementById('viewOverview').style.display = activeView === 'overview' ? 'block' : 'none';
+  document.getElementById('viewMonth').style.display = activeView === 'month' ? 'block' : 'none';
+  document.getElementById('navOverview').classList.toggle('active', activeView === 'overview');
+  document.getElementById('navMonth').classList.toggle('active', activeView === 'month');
+  document.getElementById('navMonthLabel').textContent = currentMonth ? monthLabel(currentMonth) : 'Mês';
+  document.getElementById('subtitle').textContent = activeView === 'overview'
+    ? 'Visão geral de todos os meses'
+    : (currentMonth ? 'Editando ' + monthLabelLong(currentMonth) : '');
+}
+
 function renderAll(skipMonthsBar){
   if (!skipMonthsBar) renderMonthsBar();
   renderProfileGrid();
-  document.getElementById('subtitle').textContent = 'Editando ' + monthLabel(currentMonth);
   renderIncome();
   renderCategories();
   renderSummary();
+  renderOverviewStats();
   renderDistTable();
   renderDonut();
   renderLine();
   renderBar();
+  applyView();
 }
+
+document.getElementById('navOverview').addEventListener('click', () => { activeView = 'overview'; applyView(); });
+document.getElementById('navMonth').addEventListener('click', () => { activeView = 'month'; applyView(); });
 
 document.getElementById('addIncome').addEventListener('click', () => {
   currentMonthData().incomeItems.push({ id: uid(), nome: '', valor: 0 });
@@ -918,9 +1138,11 @@ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   if (user) {
     document.getElementById('authGate').style.display = 'none';
-    document.getElementById('appRoot').style.display = 'block';
+    document.getElementById('appRoot').style.display = 'flex';
     document.getElementById('heroActions').style.display = 'flex';
     document.getElementById('userEmail').textContent = user.email || '';
+    document.getElementById('userAvatar').textContent = (user.email || '?').charAt(0).toUpperCase();
+    document.getElementById('greeting').textContent = 'Olá, ' + (user.email ? user.email.split('@')[0] : '');
     await loadData();
     renderAll();
   } else {
