@@ -131,8 +131,11 @@
   .line-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid var(--line); }
   .line-item:first-of-type { border-top: none; }
   .line-item input[type=text] { flex: 1; border: none; background: transparent; padding: 0; height: auto; font-size: 13.5px; }
-  .line-item input[type=number] { width: 110px; text-align: right; }
+  .line-item input.money-input { width: 116px; text-align: right; font-family: 'Fraunces', serif; }
   .line-total { display: flex; justify-content: space-between; padding-top: 9px; margin-top: 6px; border-top: 1px solid var(--line-strong); font-weight: 600; font-size: 14px; }
+  .pin-toggle { border: none; background: transparent; padding: 5px; height: auto; width: auto; color: var(--ink-faint); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pin-toggle:hover { background: var(--surface-soft); color: var(--ink-soft); }
+  .pin-toggle.active { color: var(--primary); background: var(--primary-soft); }
 
   .cat-block { border-top: 1px solid var(--line); padding: 15px 0 15px 14px; box-shadow: inset 3px 0 0 var(--line-strong); border-radius: 5px; }
   .cat-block:first-child { border-top: none; }
@@ -359,6 +362,7 @@
           <div>
             <div class="panel">
               <h2>Entradas <span class="subtotal num" id="incomeSubtotal">R$ 0</span></h2>
+              <p class="panel-note">Toque no ícone de repetição para marcar uma entrada como fixa — ela é lançada automaticamente nos próximos meses que você criar.</p>
               <div id="incomeList"></div>
               <div class="line-total"><span>Total</span><span class="num" id="incomeTotal">R$ 0</span></div>
               <button class="small" id="addIncome" style="margin-top:10px;">+ Nova entrada</button>
@@ -366,6 +370,7 @@
 
             <div class="panel">
               <h2>Distribuição por categoria</h2>
+              <p class="panel-note">Marque um lançamento como fixo (aluguel, gás, escola, mensalidade...) para ele repetir sozinho sempre que um novo mês for criado.</p>
               <div id="catList"></div>
               <button class="small" id="addCat" style="margin-top:6px;">+ Nova categoria</button>
             </div>
@@ -459,6 +464,35 @@ function wireLiveField(el, onChange){
     onChange(e.target.value);
     saveData();
   });
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+  });
+  el.addEventListener('blur', () => renderAll(true));
+}
+
+// ---- Máscara monetária (milhar com "." e centavos com ",") ----
+const moneyStr = (n) => {
+  const v = Math.round((n||0)*100)/100;
+  return Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+function digitsToMoney(digits){
+  digits = digits.replace(/^0+(?=\d)/, '');
+  if (digits === '') digits = '0';
+  const value = parseInt(digits, 10) / 100;
+  return { value, text: moneyStr(value) };
+}
+function wireMoneyField(el, onChange){
+  const applyMask = (e) => {
+    const digits = e.target.value.replace(/\D/g, '');
+    const { value, text } = digitsToMoney(digits);
+    e.target.value = text;
+    requestAnimationFrame(() => { try { e.target.setSelectionRange(e.target.value.length, e.target.value.length); } catch(err){} });
+    onChange(value);
+    saveData();
+  };
+  el.addEventListener('input', applyMask);
+  el.addEventListener('paste', () => setTimeout(() => applyMask({ target: el }), 0));
+  el.addEventListener('focus', (e) => { requestAnimationFrame(() => e.target.setSelectionRange(e.target.value.length, e.target.value.length)); });
   el.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
   });
@@ -600,14 +634,19 @@ function saveData(){
   saveTimer = setTimeout(persistNow, 600);
 }
 
+function carryFixedItems(items){
+  return (items || []).filter(it => it.fixo).map(it => ({ id: uid(), nome: it.nome, valor: it.valor, fixo: true }));
+}
+
 function ensureMonth(ym){
   if (data.months[ym]) return;
   const existing = Object.keys(data.months).sort();
   const template = existing.length ? data.months[existing[existing.length - 1]] : null;
   const categories = template
-    ? template.categories.map(c => ({ id: uid(), nome: c.nome, pct: c.pct, tipo: c.tipo, items: [] }))
+    ? template.categories.map(c => ({ id: uid(), nome: c.nome, pct: c.pct, tipo: c.tipo, items: carryFixedItems(c.items) }))
     : blankCategories();
-  data.months[ym] = { incomeItems: [], categories, activeProfile: template ? template.activeProfile : null };
+  const incomeItems = template ? carryFixedItems(template.incomeItems) : [];
+  data.months[ym] = { incomeItems, categories, activeProfile: template ? template.activeProfile : null };
 }
 
 function currentMonthData(){
@@ -768,7 +807,8 @@ function renderIncome(){
     row.className = 'line-item';
     row.innerHTML = `
       <input type="text" value="${item.nome}" data-inc="${item.id}" data-field="nome" placeholder="Descrição" />
-      <input type="number" value="${item.valor}" data-inc="${item.id}" data-field="valor" step="10" />
+      <input type="text" inputmode="decimal" class="money-input" value="${moneyStr(item.valor)}" data-inc="${item.id}" data-field="valor" />
+      <button class="pin-toggle${item.fixo ? ' active' : ''}" data-fixinc="${item.id}" title="${item.fixo ? 'Fixa — repete todo mês' : 'Marcar como fixa (repete no próximo mês)'}">${REPEAT_ICON}</button>
       <button class="ghost" data-delinc="${item.id}" aria-label="Remover entrada">&times;</button>
     `;
     list.appendChild(row);
@@ -780,7 +820,19 @@ function renderIncome(){
   list.querySelectorAll('input[data-inc]').forEach(el => {
     const id = el.dataset.inc, field = el.dataset.field;
     const item = md.incomeItems.find(i => i.id === id);
-    wireLiveField(el, (val) => { item[field] = field === 'valor' ? (parseFloat(val) || 0) : val; });
+    if (field === 'valor') {
+      wireMoneyField(el, (val) => { item.valor = val; });
+    } else {
+      wireLiveField(el, (val) => { item[field] = val; });
+    }
+  });
+  list.querySelectorAll('button[data-fixinc]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const item = md.incomeItems.find(i => i.id === e.currentTarget.dataset.fixinc);
+      item.fixo = !item.fixo;
+      saveData();
+      renderAll(true);
+    });
   });
   list.querySelectorAll('button[data-delinc]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -815,7 +867,8 @@ function renderCategories(){
     let itemsHtml = items.map(it => `
       <div class="line-item">
         <input type="text" value="${it.nome}" data-cat="${cat.id}" data-item="${it.id}" data-field="nome" placeholder="Descrição" />
-        <input type="number" value="${it.valor}" data-cat="${cat.id}" data-item="${it.id}" data-field="valor" step="10" />
+        <input type="text" inputmode="decimal" class="money-input" value="${moneyStr(it.valor)}" data-cat="${cat.id}" data-item="${it.id}" data-field="valor" />
+        <button class="pin-toggle${it.fixo ? ' active' : ''}" data-fixitem="${cat.id}|${it.id}" title="${it.fixo ? 'Fixo — repete todo mês' : 'Marcar como fixo (repete no próximo mês)'}">${REPEAT_ICON}</button>
         <button class="ghost" data-delitem="${cat.id}|${it.id}" aria-label="Remover lançamento">&times;</button>
       </div>
     `).join('');
@@ -869,7 +922,21 @@ function renderCategories(){
     const catId = el.dataset.cat, itemId = el.dataset.item, field = el.dataset.field;
     const cat = md.categories.find(c => c.id === catId);
     const item = cat.items.find(i => i.id === itemId);
-    wireLiveField(el, (val) => { item[field] = field === 'valor' ? (parseFloat(val) || 0) : val; });
+    if (field === 'valor') {
+      wireMoneyField(el, (val) => { item.valor = val; });
+    } else {
+      wireLiveField(el, (val) => { item[field] = val; });
+    }
+  });
+  list.querySelectorAll('button[data-fixitem]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const [catId, itemId] = e.currentTarget.dataset.fixitem.split('|');
+      const cat = md.categories.find(c => c.id === catId);
+      const item = cat.items.find(i => i.id === itemId);
+      item.fixo = !item.fixo;
+      saveData();
+      renderAll(true);
+    });
   });
   list.querySelectorAll('button[data-delitem]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -967,6 +1034,7 @@ function renderDistTable(){
 }
 
 const palette = ['#3652F0', '#0E9D74', '#C4881F', '#E14640', '#5B5FA6', '#7A5416', '#6A4DF4', '#1F8FC4'];
+const REPEAT_ICON = '<svg class="icon" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
 
 function renderDonut(){
   const md = currentMonthData();
