@@ -22,6 +22,9 @@
     --gold-soft: #f4ead4;
     --brick: #b23a34;
     --brick-soft: #f6e3e1;
+    --pine: #17332c;
+    --slate: #45507a;
+    --cream: #f4f1e6;
     --radius: 6px;
   }
   * { box-sizing: border-box; }
@@ -29,14 +32,21 @@
   .wrap { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
   .num { font-family: 'Fraunces', serif; }
 
-  header.app { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
-  header.app h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 26px; margin: 0; }
-  header.app p { margin: 4px 0 0; color: var(--ink-soft); font-size: 14px; }
+  .hero { background: var(--pine); padding: 1.75rem 1.5rem; }
+  .hero-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; }
+  .brand { display: flex; align-items: flex-start; gap: 14px; }
+  .brand-mark { width: 36px; height: 36px; border-radius: 8px; background: rgba(244,241,230,0.1); border: 1px solid rgba(244,241,230,0.25); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; color: var(--cream); flex-shrink: 0; margin-top: 1px; }
+  .hero h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 25px; margin: 0; color: #fbf9f2; }
+  .hero p#subtitle { margin: 4px 0 0; font-size: 13.5px; color: rgba(244,241,230,0.72); }
+  #heroActions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  #heroActions span#userEmail { font-size: 12.5px; color: rgba(244,241,230,0.68); margin-right: 2px; }
+  #heroActions button { background: rgba(244,241,230,0.08); border-color: rgba(244,241,230,0.28); color: var(--cream); }
+  #heroActions button:hover { background: rgba(244,241,230,0.18); }
 
-  .months-bar { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
-  .month-tab { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-soft); background: transparent; border: none; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; white-space: nowrap; }
-  .month-tab.active { color: var(--ink); border-bottom-color: var(--teal); font-weight: 500; }
-  .month-tab:hover { color: var(--ink); }
+  .months-bar { display: flex; align-items: flex-end; gap: 4px; overflow-x: auto; padding-top: 12px; margin-bottom: 1.75rem; border-bottom: 2px solid var(--pine); }
+  .month-tab { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-soft); background: var(--line); border: 2px solid transparent; border-radius: 8px 8px 0 0; padding: 8px 16px; cursor: pointer; white-space: nowrap; }
+  .month-tab.active { color: var(--ink); background: var(--bg); font-weight: 500; border: 2px solid var(--pine); border-bottom-color: var(--bg); margin-bottom: -2px; }
+  .month-tab:hover:not(.active) { background: var(--line-strong); }
   .month-add { display: flex; align-items: center; gap: 6px; margin-left: 4px; }
   .month-add input[type=month] { height: 30px; font-size: 13px; padding: 0 6px; }
   .month-add button { height: 30px; padding: 0 10px; font-size: 13px; }
@@ -55,7 +65,8 @@
   button:hover { background: var(--bg); }
   button.ghost { border: none; background: transparent; padding: 4px 6px; height: auto; color: var(--ink-faint); }
   button.ghost:hover { background: var(--brick-soft); color: var(--brick); }
-  button.small { height: 28px; font-size: 12px; padding: 0 8px; }
+  button.small { height: 28px; font-size: 12px; padding: 0 10px; border-style: dashed; color: var(--ink-soft); background: transparent; }
+  button.small:hover { background: var(--bg); border-style: solid; color: var(--ink); }
   button.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
   button.primary:hover { background: #285a50; }
   button:disabled { opacity: 0.6; cursor: default; }
@@ -66,10 +77,13 @@
   .line-item input[type=number] { width: 110px; text-align: right; }
   .line-total { display: flex; justify-content: space-between; padding-top: 8px; margin-top: 6px; border-top: 1px solid var(--line-strong); font-weight: 500; font-size: 14px; }
 
-  .cat-block { border-top: 1px solid var(--line); padding: 12px 0; }
-  .cat-block:first-child { border-top: none; padding-top: 0; }
+  .cat-block { border-top: 1px solid var(--line); padding: 14px 0 14px 14px; box-shadow: inset 4px 0 0 var(--line-strong); border-radius: 5px; }
+  .cat-block:first-child { border-top: none; }
+  .cat-block.tipo-gasto { box-shadow: inset 4px 0 0 var(--gold); }
+  .cat-block.tipo-investimento { box-shadow: inset 4px 0 0 var(--teal); }
+  .cat-block.tipo-reserva { box-shadow: inset 4px 0 0 var(--slate); }
   .cat-block-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .cat-block-head input[type=text].cat-name { flex: 1; border: none; background: transparent; font-size: 14.5px; font-weight: 500; padding: 0; height: auto; }
+  .cat-block-head input[type=text].cat-name { flex: 1; border: none; background: transparent; font-size: 15px; font-weight: 600; padding: 0; height: auto; }
   .cat-block-head select { width: 118px; font-size: 12px; }
   .cat-sub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
   .field { display: flex; align-items: center; gap: 6px; }
@@ -85,9 +99,9 @@
   .tag.reserva { background: #e6e9f2; color: #45507a; }
 
   .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.1rem; }
-  .stat { background: var(--bg); border-radius: var(--radius); padding: 12px 14px; }
+  .stat { background: var(--bg); border-radius: var(--radius); padding: 12px 14px; border-left: 3px solid var(--line-strong); }
   .stat p.label { margin: 0 0 4px; font-size: 12px; color: var(--ink-soft); }
-  .stat p.value { margin: 0; font-size: 20px; font-weight: 500; }
+  .stat p.value { margin: 0; font-size: 22px; font-weight: 500; }
 
   table.dist { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   table.dist th { text-align: left; font-size: 11.5px; color: var(--ink-soft); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); }
@@ -98,8 +112,11 @@
   .sobra-neg { color: var(--brick); }
 
   .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
-  .profile-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
-  .profile-card.active { border-color: var(--teal); background: var(--teal-soft); }
+  .profile-card { border: 1px solid var(--line); border-top-width: 3px; border-radius: 10px; padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .profile-card.key-investidor { border-top-color: var(--teal); }
+  .profile-card.key-organizado { border-top-color: var(--gold); }
+  .profile-card.key-livre { border-top-color: var(--slate); }
+  .profile-card.active { box-shadow: 0 0 0 2px var(--teal) inset; background: var(--teal-soft); }
   .profile-card h3 { font-family: 'Fraunces', serif; font-size: 14.5px; margin: 0; }
   .profile-card p { font-size: 12.5px; color: var(--ink-soft); margin: 0; flex: 1; }
   .profile-card .badge { font-size: 11px; color: var(--teal); font-weight: 500; }
@@ -123,6 +140,26 @@
 </style>
 </head>
 <body>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="brand">
+      <span class="brand-mark">PF</span>
+      <div>
+        <h1>Painel financeiro</h1>
+        <p id="subtitle">Sua renda, dividida com intenção.</p>
+      </div>
+    </div>
+    <div id="heroActions" style="display:none;">
+      <span id="userEmail"></span>
+      <button id="exportBtn">Exportar backup</button>
+      <button id="importBtn">Importar backup</button>
+      <input type="file" id="importInput" accept="application/json" style="display:none;" />
+      <button id="resetBtn">Limpar tudo</button>
+      <button id="logoutBtn">Sair</button>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
   <h2 class="sr-only">Painel de controle financeiro pessoal com login por e-mail e senha, sincronização na nuvem, categorias independentes por mês com limite ou meta por percentual e tabela de distribuição</h2>
 
@@ -147,21 +184,6 @@
   </div>
 
   <div id="appRoot" style="display:none;">
-    <header class="app">
-      <div>
-        <h1>Painel financeiro</h1>
-        <p id="subtitle">Carregando seus dados...</p>
-      </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-        <span id="userEmail" style="font-size:12.5px; color:var(--ink-soft);"></span>
-        <button id="exportBtn">Exportar backup</button>
-        <button id="importBtn">Importar backup</button>
-        <input type="file" id="importInput" accept="application/json" style="display:none;" />
-        <button id="resetBtn" style="border-color: var(--line-strong);">Limpar tudo</button>
-        <button id="logoutBtn">Sair</button>
-      </div>
-    </header>
-
     <div class="months-bar" id="monthsBar"></div>
 
     <div class="panel" style="margin-bottom:1.5rem;">
@@ -479,7 +501,7 @@ function renderProfileGrid(){
   Object.keys(PROFILES).forEach(key => {
     const p = PROFILES[key];
     const card = document.createElement('div');
-    card.className = 'profile-card' + (md.activeProfile === key ? ' active' : '');
+    card.className = 'profile-card key-' + key + (md.activeProfile === key ? ' active' : '');
     card.innerHTML = `
       <h3>${p.label}</h3>
       <p>${p.desc}</p>
@@ -614,7 +636,7 @@ function renderCategories(){
     const barWidth = Math.min(st.pct * 100, 100);
 
     const block = document.createElement('div');
-    block.className = 'cat-block';
+    block.className = 'cat-block tipo-' + cat.tipo;
     let itemsHtml = items.map(it => `
       <div class="line-item">
         <input type="text" value="${it.nome}" data-cat="${cat.id}" data-item="${it.id}" data-field="nome" placeholder="Descrição" />
@@ -889,16 +911,20 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     document.getElementById('authGate').style.display = 'none';
     document.getElementById('appRoot').style.display = 'block';
+    document.getElementById('heroActions').style.display = 'flex';
     document.getElementById('userEmail').textContent = user.email || '';
     await loadData();
     renderAll();
   } else {
     document.getElementById('authGate').style.display = 'block';
     document.getElementById('appRoot').style.display = 'none';
+    document.getElementById('heroActions').style.display = 'none';
+    document.getElementById('subtitle').textContent = 'Sua renda, dividida com intenção.';
     authEmail.value = '';
     authPass.value = '';
   }
 });
 </script>
+
 </body>
 </html>
